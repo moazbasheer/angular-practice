@@ -47,7 +47,7 @@ ng g c header
 
 ### - This is the code of the app component.
 
-```bash
+```typescript
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 

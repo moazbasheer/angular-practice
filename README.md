@@ -45,7 +45,7 @@ ng g c header
 
 - app-root is the app component.
 
-### - This is app component 
+### - This is the code of the app component.
 
 ```bash
 import { Component } from '@angular/core';
@@ -62,3 +62,25 @@ export class AppComponent {
 }
 
 ```
+
+- tag name is written in the selector attribute - ``` selector: 'app-root', ```
+and this is the used word in the html.
+
+### - To put header component in the app component, you have at first to pass the class of header component in the imports of the app components and use it as you want in the app component and then you have to import the component in the app component class file.
+
+```bash
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './header/header.component';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, HeaderComponent],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {
+  title = 'my-app';
+}
+```
+

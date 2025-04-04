@@ -18,3 +18,7 @@ ng serve
 ng serve --open
 ```
 
+### - Run this command to create a header component:
+```bash
+ng g c header
+```

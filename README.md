@@ -68,7 +68,7 @@ and this is the used word in the html.
 
 ### - To put header component in the app component, you have at first to pass the class of header component in the imports of the app components and use it as you want in the app component and then you have to import the component in the app component class file.
 
-```bash
+```typescript
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
@@ -84,13 +84,17 @@ export class AppComponent {
 }
 ```
 ### - Write the word header works! in the html of the header component.
-```bash
+```html
 <p>header works!</p>
 
 ```
 ### - Write the header component in the html of the app component.
+#### - File: `app.component.html`
+```html
+<app-header></app-header>
+```
 
-![dd](image-1.PNG)
+![image-1.PNG](image-1.PNG)
 
 ### - And Then the header component appear in the app component as in the image.
 

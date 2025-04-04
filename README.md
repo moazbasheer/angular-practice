@@ -26,7 +26,7 @@ ng g c header
 ```
 
 ### - In src/index.html, this code is written.
-
+#### File: `src/index.html`
 ```html
 <!doctype html>
 <html lang="en">
@@ -46,7 +46,7 @@ ng g c header
 - app-root is the app component.
 
 ### - This is the code of the app component.
-
+#### File: `app.component.ts`
 ```typescript
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
@@ -67,7 +67,7 @@ export class AppComponent {
 and this is the used word in the html.
 
 ### - To put header component in the app component, you have at first to pass the class of header component in the imports of the app components and use it as you want in the app component and then you have to import the component in the app component class file.
-
+#### File: `app.component.ts`
 ```typescript
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
@@ -84,6 +84,7 @@ export class AppComponent {
 }
 ```
 ### - Write the word header works! in the html of the header component.
+#### File: `header.component.html`
 ```html
 <p>header works!</p>
 

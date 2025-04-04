@@ -1,5 +1,5 @@
 # angular-practice
-
+## - Components
 ### - This version is Angular 19
 ### - Run this command to setup angular on your machine:
 

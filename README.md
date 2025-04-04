@@ -1,5 +1,7 @@
 # angular-practice
+
 ## - Components
+
 ### - This version is Angular 19
 ### - Run this command to setup angular on your machine:
 
@@ -99,3 +101,5 @@ export class AppComponent {
 
 ### - And Then the header component appear in the app component as in the image.
 
+## - Data Binding
+![data-binding.PNG](data-binding.PNG)

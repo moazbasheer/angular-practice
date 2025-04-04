@@ -90,6 +90,7 @@ export class AppComponent {
 ```
 ### - Write the header component in the html of the app component.
 
-<img src="https://raw.githubusercontent.com/moazbasheer/angular-practice/refs/heads/main/image-1.PNG?token=GHSAT0AAAAAADBU7NFM3CC6J4JNNEZIPLG6Z7PVQ6Q" width="700" style="border: 1px solid black;">
+![dd](image-1.PNG)
 
 ### - And Then the header component appear in the app component as in the image.
+

@@ -27,7 +27,7 @@ ng g c header
 
 ### - In src/index.html, this code is written.
 
-```bash
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -83,4 +83,13 @@ export class AppComponent {
   title = 'my-app';
 }
 ```
+### - Write the word header works! in the html of the header component.
+```bash
+<p>header works!</p>
 
+```
+### - Write the header component in the html of the app component.
+
+<img src="https://raw.githubusercontent.com/moazbasheer/angular-practice/refs/heads/main/image-1.PNG?token=GHSAT0AAAAAADBU7NFM3CC6J4JNNEZIPLG6Z7PVQ6Q" width="700" style="border: 1px solid black;">
+
+### - And Then the header component appear in the app component as in the image.

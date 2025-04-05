@@ -116,6 +116,7 @@ export class AppComponent {
 
 ### - ngFor
 - To view students in a web page, you have to write this syntax in the ts file.
+- and don't forget to import FormsModule and CommonModule
 ```typescript
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
@@ -207,6 +208,138 @@ export const routes: Routes = [
 ```
 
 - you can use the hyperlink in routerLink attribute.
+#### File: `header.component.html`
 ```html
-<a routeLink="/about">About</a>
+<li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a></li>
+```
+- and you have to import RouterModule in the component.
+
+#### File: `header.component.ts`
+```typescript
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
+@Component({
+  selector: 'app-header',
+  imports: [FormsModule, CommonModule, RouterModule],
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css'
+})
+```
+## - Pipes
+
+### - To make a word uppercase, at first declare the variable in the typescript code.
+
+```typescript
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-navbar',
+  imports: [CommonModule],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css'
+})
+export class NavbarComponent {
+  word: string = "My words"
+}
+```
+### - put the pipe uppercase on the variable to make the word uppercase.
+```html
+<p>{{word | uppercase}}</p>
+```
+
+## - Custom Pipes
+
+### - Run this command in the terminal.
+
+```bash
+ng g p dollar
+```
+### - To write a dollar after the number, use this code.
+
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'dollar'
+})
+export class DollarPipe implements PipeTransform {
+
+  transform(num: number | string): string {
+    return num + "$";
+  }
+
+}
+
+```
+### - To use the pipe in a component, you have to import common module and the pipe and use the pipe in the html code.
+
+```html
+<p>{{word | dollar}}</p>
+```
+```typescript
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DollarPipe } from '../dollar.pipe';
+
+@Component({
+  selector: 'app-navbar',
+  imports: [CommonModule, DollarPipe],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.css'
+})
+export class NavbarComponent {
+  word: string = "My words"
+}
+```
+
+### - If you used multiple parameters in the pipe function, the first parameter will be before the pipe symbol and the rest will be passed as the following.
+
+```html
+<p>{{word | con:12:"word2"}}</p>
+
+```
+
+## - Forms
+
+### - To get data from a form, you have to import ReactiveFormsModule in typescript file and make form object of type FormGroup and write the parameters you want to put in your form.
+
+```typescript
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-add-form',
+  imports: [ReactiveFormsModule],
+  templateUrl: './add-form.component.html',
+  styleUrl: './add-form.component.css'
+})
+export class AddFormComponent {
+  form: FormGroup 
+  constructor() {
+    this.form = new FormGroup({
+      name: new FormControl(),
+      email: new FormControl(),
+    });
+  }
+
+  send() {
+    console.log(this.form.value.name);
+    console.log(this.form.value.email);
+  }
+}
+
+```
+### - This is the html file.
+
+```html
+<form class="form" [formGroup]="form" (ngSubmit)="send();">
+    <input type="text" name="name" formControlName="name">
+    <input type="text" name="email" formControlName="email">
+    <button>Submit</button>
+</form>
+
 ```

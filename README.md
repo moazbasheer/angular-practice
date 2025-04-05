@@ -171,3 +171,30 @@ npm i bootstrap jquery
 ],
 
 ```
+
+## - Routing
+
+- To route the components, write this code in app.routes.ts.
+- Make an object in routes array, this object contains the path of the page in the path attribute and the component in the component attribute.
+
+#### File: `app.routes.ts`
+```typescript
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { AboutComponent } from './about/about.component';
+import { ServiceComponent } from './service/service.component';
+
+export const routes: Routes = [
+    {path: "", component: HomeComponent},
+    {path: "about", component: AboutComponent},
+    {path: "service", component: ServiceComponent},
+];
+
+```
+
+- In app component html, write this code.
+#### File: `app.component.html`
+
+```html
+<router-outlet></router-outlet>
+```

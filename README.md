@@ -102,4 +102,72 @@ export class AppComponent {
 ### - And Then the header component appear in the app component as in the image.
 
 ## - Data Binding
+
 ![data-binding.PNG](data-binding.PNG)
+
+## - Directives
+
+### - ngIf
+- To make an If condition on a div in html, you have to write this syntax.
+- If the condition is true the div will be displayed, otherwise the div won't be displayed.
+```html
+<div *ngIf="status == true">Display</div>
+```
+
+### - ngFor
+- To view students in a web page, you have to write this syntax in the ts file.
+```typescript
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-header',
+  imports: [FormsModule, CommonModule],
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css'
+})
+export class HeaderComponent {
+  public name: string
+  students: any[]
+  constructor() {
+    this.name = "moaz"
+    this.students = [
+      {id: 1, name: "abc"},
+      {id: 2, name: "deg"},
+      {id: 3, name: "hij"}
+    ]
+  }
+}
+```
+- and write this syntax in the html.
+
+```html
+<ul>
+    <li *ngFor="let student of students; let i = index">{{student.name}} - {{students.length}}</li>
+</ul>
+```
+
+## - Setuping any package globally in angular.
+
+- Run this command.
+
+```bash
+npm i bootstrap jquery
+```
+
+- Put files' paths in styles and scripts in build in bootstrap.json
+
+#### File: `bootstrap.json`
+
+```json
+"styles": [
+  "src/styles.css",
+  "node_modules/bootstrap/dist/css/bootstrap.css"
+],
+"scripts": [
+  "node_modules/bootstrap/dist/js/bootstrap.js",
+  "node_modules/jquery/dist/jquery.js"
+],
+
+```

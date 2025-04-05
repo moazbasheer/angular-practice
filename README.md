@@ -147,6 +147,13 @@ export class HeaderComponent {
     <li *ngFor="let student of students; let i = index">{{student.name}} - {{students.length}}</li>
 </ul>
 ```
+### - ng-template
+
+### - ng-container
+
+## - Custom Directives
+
+
 
 ## - Setuping any package globally in angular.
 
@@ -197,4 +204,9 @@ export const routes: Routes = [
 
 ```html
 <router-outlet></router-outlet>
+```
+
+- you can use the hyperlink in routerLink attribute.
+```html
+<a routeLink="/about">About</a>
 ```

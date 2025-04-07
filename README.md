@@ -422,4 +422,37 @@ export class AddFormComponent {
 
 ```
 
+### - You can use Validators.
 
+```typescript
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-forms',
+  imports: [ReactiveFormsModule],
+  templateUrl: './forms.component.html',
+  styleUrl: './forms.component.css'
+})
+export class FormsComponent {
+  form: FormGroup
+  constructor() {
+    this.form = new FormGroup({
+      name: new FormControl('', Validators.required),
+      email: new FormControl('', Validators.required)
+    })
+  }
+  send() {
+    console.log(this.form.get('name'));
+    console.log(this.form.get('email'));
+  }
+}
+```
+
+```html
+<form [formGroup]="form" (ngSubmit)="send();">
+    <input type="text" formControlName="name">
+    <input type="text" formControlName="email">
+    <button [disabled]="form.invalid" >Submit</button>
+</form>
+```

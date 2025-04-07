@@ -106,8 +106,8 @@ export class AppComponent {
 
 ## - Directives
 ### - Components are directives with a template.
-### - Structure directives are changing the layout of the elements.
-### - Attribute directives are changing the appearance and behaviour of the elements.
+### - Structure directives are changing the layout of the elements like ngIf and ngFor.
+### - Attribute directives are changing the appearance and behaviour of the elements like ngClass and ngStyle.
 ### - ngIf
 - To make an If condition on a div in html, you have to write this syntax.
 - If the condition is true the div will be displayed, otherwise the div won't be displayed.
@@ -167,6 +167,20 @@ export class HeaderComponent {
   <div>{{student.name}}</div>
 </ng-container>
 
+```
+### - ngStyle
+- it contains a group of styles of css.
+```html
+<div [ngStyle]="{'background-color': x == 2? 'red':'green', 'color': 'blue'}">Word</div>
+```
+### - ngClass
+- it contains a group of class names.
+```html
+<div [ngClass]="{'good': true, 'col': false}">Word 2</div>
+<div [class.colored]="isColored">Word 3</div>
+```
+```typescript
+isColored: boolean = true
 ```
 ## - Custom Directives
 
@@ -697,3 +711,5 @@ export const routes: Routes = [
     {path: "planning", loadChildren: () => PlanningModule}
 ];
 ```
+
+## - Components Life cycle

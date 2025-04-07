@@ -604,3 +604,10 @@ export class OneProductComponent {
 <div>{{all_data.description}}</div>
 ```
 
+## - Post request in HttpClient
+
+## - Authentication in HttpClient
+
+## - Update HTML and select using Angular
+
+## - Updating Errors in Angular

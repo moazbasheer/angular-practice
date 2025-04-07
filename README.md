@@ -605,6 +605,54 @@ export class OneProductComponent {
 ```
 
 ## - Post request in HttpClient
+### - This is a sample code for doing a post request in HttpClient.
+
+```typescript
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { PostService } from '../post.service';
+import { ViewComponent } from './view/view.component';
+
+@Component({
+  selector: 'app-post',
+  imports: [ReactiveFormsModule, ViewComponent],
+  templateUrl: './post.component.html',
+  styleUrl: './post.component.css'
+})
+export class PostComponent {
+  
+  post: FormGroup
+  constructor(public _PostService: PostService) {
+    
+    this.post = new FormGroup({
+      id: new FormControl(),
+      title: new FormControl(),
+      description: new FormControl()
+    });
+  }
+
+  submit() {
+    this._PostService.create(this.post.value).subscribe(data => {
+      console.log(data);
+    });
+  }
+}
+
+```
+```html
+<form [formGroup]="post" (ngSubmit)="submit();">
+    <label for="">id</label>
+    <input type="number" formControlName="id">
+    <br>
+    <label for="">title</label>
+    <input type="text" formControlName="title">
+    <br>
+    <label for="">description</label>
+    <input type="text" formControlName="description">
+    <br>
+    <button>Add</button>
+</form>
+```
 
 ## - Authentication in HttpClient
 

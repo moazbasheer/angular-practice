@@ -106,7 +106,9 @@ export class AppComponent {
 ![data-binding.PNG](data-binding.PNG)
 
 ## - Directives
-
+### - Components are directives with a template.
+### - Structure directives are changing the layout of the elements.
+### - Attribute directives are changing the appearance and behaviour of the elements.
 ### - ngIf
 - To make an If condition on a div in html, you have to write this syntax.
 - If the condition is true the div will be displayed, otherwise the div won't be displayed.
@@ -150,12 +152,88 @@ export class HeaderComponent {
 ```
 ### - ng-template
 
-### - ng-container
+- ng-template takes a label and doesn't appear if the label isn't executed and the div of the ng-template don't appear
 
+```html
+
+<div *ngIf="numGoods != 0; else outOfStock">{{numGoods}}</div>
+<ng-template #outOfStock>Out Of Stock</ng-template>
+
+```
+### - ng-container
+- the div of the ng-container don't appear and used with loops and switch
+
+```html
+<ng-container *ngFor="let student of students; let i = index">
+  <div>{{student.name}}</div>
+</ng-container>
+
+```
 ## - Custom Directives
 
+### - To make a custom directive, run this command on your terminal.
 
+```bash
+ng g directive LightBox
+```
 
+### - Use ElementRef to get the element which is in the html.
+- Write this code.
+```typescript
+import { Directive, ElementRef, HostListener } from '@angular/core';
+
+@Directive({
+  selector: '[LightBox]'
+})
+export class LightboxDirective {
+
+  constructor(private elementRef: ElementRef) {
+    this.elementRef.nativeElement.style.display = "block";
+    this.elementRef.nativeElement.style.border = "2px solid darkblue";
+  }
+  @HostListener('mouseover') onMouseOver() {
+    this.elementRef.nativeElement.style.border = "3px solid yellow";
+  }
+
+  @HostListener('mouseout') onMouseOut() {
+    this.elementRef.nativeElement.style.border = "2px solid darkblue";
+  }
+}
+
+```
+ - HostListener is used to make an event listener.
+ - Call the directive in the html by this code.
+```html
+<div LightBox>Sentence</div>
+```
+- You can make an attribute with the directive like highlightColor in the following code.
+
+#### File: `lightbox.directive.ts`
+```typescript
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[LightBox]'
+})
+export class LightboxDirective {
+  @Input() highlightColor: string = "yellow"
+  constructor(private elementRef: ElementRef) {
+    this.elementRef.nativeElement.style.display = "block";
+    this.elementRef.nativeElement.style.border = "2px solid darkblue";
+  }
+  @HostListener('mouseover') onMouseOver() {
+    this.elementRef.nativeElement.style.border = `3px solid ${this.highlightColor}`;
+  }
+
+  @HostListener('mouseout') onMouseOut() {
+    this.elementRef.nativeElement.style.border = "2px solid darkblue";
+  }
+}
+```
+- The html will be as follows.
+```html
+<div LightBox highlightColor="red">Sentence</div>
+```
 ## - Setuping any package globally in angular.
 
 - Run this command.
@@ -343,3 +421,5 @@ export class AddFormComponent {
 </form>
 
 ```
+
+

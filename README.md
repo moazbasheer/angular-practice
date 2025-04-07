@@ -653,9 +653,47 @@ export class PostComponent {
     <button>Add</button>
 </form>
 ```
+## - To upload the angular on a server for production
+### - run this command.
+```bash
+ng build -c production
+```
+### - and set the index.html
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MyApp</title>
+  <base href="./">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
+```
+- this line ``` <base href="./"> ```
 
 ## - Authentication in HttpClient
 
 ## - Update HTML and select using Angular
 
 ## - Updating Errors in Angular
+
+## - Modules
+### - To make a module, run this command.
+```bash
+ng g m hr --routing
+```
+### - To make a route to modules 
+#### File: `app.routes.ts`
+```typescript
+import { Routes } from '@angular/router';
+import { PlanningModule } from './planning/planning.module';
+export const routes: Routes = [
+    {path: "hr", loadChildren: () => import('./hr/hr.module').then(m => m.HrModule)},
+    {path: "planning", loadChildren: () => PlanningModule}
+];
+```

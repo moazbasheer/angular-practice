@@ -1,5 +1,4 @@
 # angular-practice
-
 ## - Components
 
 ### - This version is Angular 19
@@ -374,7 +373,7 @@ export class NavbarComponent {
 }
 ```
 
-### - If you used multiple parameters in the pipe function, the first parameter will be before the pipe symbol and the rest will be passed as the following.
+### - If you used multiple parameters in the pipe function, the first parameter will be before the pipe symbol and the rest will be passed as the following:
 
 ```html
 <p>{{word | con:12:"word2"}}</p>
@@ -456,3 +455,152 @@ export class FormsComponent {
     <button [disabled]="form.invalid" >Submit</button>
 </form>
 ```
+## - Http Client
+
+### - To use the Http Client to send and recieve data from the APIs, you have to use provideHttpClient() in app.config.ts and then make a service
+
+#### File: `app.config.ts`
+
+```typescript
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }), 
+    provideRouter(routes), 
+    provideClientHydration(withEventReplay()), 
+    provideHttpClient()
+  ]
+};
+```
+
+### - To make a service, write this command.
+
+```bash
+ng g s todolist
+```
+
+### - you can get data from API using get function in the API.
+#### File: `todolist.service.ts`
+```typescript
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TodolistService {
+
+  constructor(public _HttpClient: HttpClient) {
+    
+
+  }
+
+  summary(): Observable<any> {
+    return this._HttpClient.get('https://dummyjson.com/products');
+  }
+}
+
+```
+### - And inside the component, you can use it as the following:
+
+#### File: `service-comp.component.ts`
+```typescript
+import { Component } from '@angular/core';
+import { TodolistService } from '../todolist.service';
+
+@Component({
+  selector: 'app-service-comp',
+  imports: [],
+  templateUrl: './service-comp.component.html',
+  styleUrl: './service-comp.component.css'
+})
+export class ServiceCompComponent {
+  all_data: any
+
+  constructor(public _Todolist: TodolistService) {
+    
+  }
+  summary() {
+    this._Todolist.summary().subscribe(data => {
+      this.all_data = data;
+      console.log(this.all_data);
+    })
+  }
+}
+```
+#### File: `service-comp.component.html`
+```html
+<p>service-comp works!</p>
+<button (click)="summary();">Get Products</button>
+```
+### - You can put the apiUrl in environment.
+File: `src/environment/environment.ts`
+```typescript
+export const environment = {
+    production: false,
+    apiUrl: 'https://dummyjson.com'
+};
+```
+
+### - So the class will be like the following.
+```typescript
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../environment/environment'
+@Injectable({
+  providedIn: 'root'
+})
+export class TodolistService {
+
+  constructor(public _HttpClient: HttpClient) {
+    
+  }
+
+  summary(): Observable<any> {
+    return this._HttpClient.get(environment.apiUrl + "/products");
+  }
+
+  one_product(id: number): Observable<any> {
+    return this._HttpClient.get(environment.apiUrl + "/products/" + id);
+  }
+}
+```
+
+### - To view one product only in the page.
+
+```typescript
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { TodolistService } from '../todolist.service';
+
+@Component({
+  selector: 'app-one-product',
+  imports: [],
+  templateUrl: './one-product.component.html',
+  styleUrl: './one-product.component.css'
+})
+export class OneProductComponent {
+  id: any
+  all_data: any
+  constructor(public _TodolistService: TodolistService, public _ActivatedRoute: ActivatedRoute) {
+    this.id = this._ActivatedRoute.snapshot.paramMap.get("id");
+    this._TodolistService.one_product(this.id).subscribe(data => {
+      this.all_data = data;
+    });
+  }
+}
+```
+
+```html
+<div>{{all_data.description}}</div>
+```
+

@@ -667,6 +667,14 @@ export class PostComponent {
     <button>Add</button>
 </form>
 ```
+
+### - You can pass HttpParams to the request like the following.
+
+```typescript
+let params = new HttpParams();
+params.append('keyword', 'word');
+```
+
 ## - To upload the angular on a server for production
 ### - run this command.
 ```bash
@@ -713,3 +721,116 @@ export const routes: Routes = [
 ```
 
 ## - Components Life cycle
+- constructor
+- ngOnChanges
+- ngOnInit
+- ngDoCheck
+- ngAfterContentInit
+- ngAfterContentChecked
+- ngAfterViewInit
+- ngAfterViewChecked
+- ngOnDestroy
+
+## - @Input and @Output
+### - For @Input
+- you have to define an attribute and put @Input before it.
+- you have to pass this variable to the nested component like the following
+
+ ``` <app-product [inp]="x"></app-product> ```
+
+- Then you can use the x as you want inside the nested component.
+
+### - For @Output
+
+- you have to define an attribute of type EventEmitter<T> as @Output
+- you have to call this attribute when the element is changed and pass the changed variable to the function as the following.
+
+ ``` this.outChanged.emit(this.out); ```
+
+- you have to define this function in the component directive and call another function inside it like onOutChanged like the following.
+
+``` <app-product (outChanged)="onOutChanged($event)"></app-product> ```
+
+- inside the parent component, you have to define the function onOutChanged and change the value of the attribute inside it and use this attribute inside the component.
+
+#### File: `add.component.html`
+```html
+<p>add works!</p>
+<button (click)="to();">Toastr</button>
+
+<app-product [inp]="x" (outChanged)="onOutChanged($event)"></app-product>
+
+<div>{{y}}</div>
+
+```
+
+#### File: `product.component.html`
+
+```html
+{{inp}}
+<button (click)="change_value();">Change</button>
+{{out}}
+```
+#### File: `add.component.ts`
+```typescript
+import { Component } from '@angular/core';
+import {DefaultGlobalConfig, Toast, ToastrModule, ToastrService} from 'ngx-toastr';
+import { ProductComponent } from '../product/product.component';
+
+@Component({
+  selector: 'app-add',
+  imports: [ToastrModule, ProductComponent],
+  templateUrl: './add.component.html',
+  styleUrl: './add.component.css'
+})
+export class AddComponent {
+  constructor(public _Toastr: ToastrService) {
+    this.y = 0
+  }
+  x: number = 4
+  y: number
+  to() {
+    console.log(22);
+    
+    this._Toastr.success("Success", "Login Success");
+  }
+
+  onOutChanged(price: number) {
+    this.y = price;
+  }
+}
+
+```
+#### File: `product.component.ts`
+```typescript
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-product',
+  imports: [],
+  templateUrl: './product.component.html',
+  styleUrl: './product.component.css'
+})
+export class ProductComponent {
+  @Input() inp: number = 0
+  out: number = 5
+  @Output() outChanged: EventEmitter<number>
+  constructor() {
+    this.outChanged = new EventEmitter<number>();
+  }
+  change_value() {
+    this.out = 7;
+    this.outChanged.emit(this.out);
+  }
+}
+
+
+```
+## - Others
+
+### - Changing format of date
+
+```typescript
+let newDate = new DatePipe('en-US');
+let date = newDate.transform(this.form.value.deadline, 'dd-MM-YYYY');
+```

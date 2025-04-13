@@ -617,6 +617,13 @@ export class OneProductComponent {
 ```html
 <div>{{all_data.description}}</div>
 ```
+
+### - A better use to the ActivatedRoute
+```typescript
+this._ActivatedRoute.paramMap.subscribe(paramMap => {
+  this.id = paramMap.get("id");
+});
+```
 ## - Services
 ```typescript
 @Injectable({
@@ -880,6 +887,134 @@ export class OrderComponent implements AfterViewInit {
 
 <input #myInput type="text">
 ```
+
+## - Translation
+
+### - To setup translation package in angular, run this command.
+
+```bash
+npm install @ngx-translate/core @ngx-translate/http-loader @colsen1991/ngx-translate-extract-marker
+```
+
+### - To put the config in the config file, wer
+
+#### File: `app.config.ts`
+
+  
+```typescript
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import {TranslateModule, TranslateLoader} from "@ngx-translate/core";
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
+
+const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
+  new TranslateHttpLoader(http, './i18n/', '.json');
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }), 
+    provideRouter(routes), 
+    provideClientHydration(withEventReplay()),
+    importProvidersFrom([
+      TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpLoaderFactory,
+        deps: [HttpClient],
+      },
+    })]),
+    provideHttpClient()
+  ]
+};
+
+
+```
+
+### - To support it in your component, use this code.
+
+```typescript
+import { AfterViewInit, Component } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+@Component({
+  selector: 'app-add',
+  imports: [TranslateModule],
+  templateUrl: './add.component.html',
+  styleUrl: './add.component.css'
+})
+export class AddComponent implements AfterViewInit {
+  lang: any
+  constructor(private translate: TranslateService) {
+    if(this.translate.currentLang == 'ar') {
+      this.lang = 'en';
+    }
+    else {
+      this.lang = 'ar';
+    }
+  }
+  ngAfterViewInit() {
+    this.translate.get('general.loading').subscribe(res => {
+      console.log(res);
+    });
+  }
+
+  changeLanguage() {
+    if(!!localStorage.getItem('lang')) {
+      if(localStorage.getItem('lang') == 'ar') {
+        localStorage.setItem('lang', 'en');
+        this.lang = 'ar';
+      } else {
+        localStorage.setItem('lang', 'ar');
+        this.lang = 'en';
+      }
+    } else {
+      localStorage.setItem('lang', 'en');
+      this.lang = 'ar';
+    }
+    window.location.reload();
+  }
+
+}
+```
+
+### - To support it in app component, use this code.
+```typescript
+import { AfterViewInit, Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, TranslateModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent implements AfterViewInit {
+  title = 'my-app';
+  constructor(private translate: TranslateService) {
+    
+  }
+
+  ngAfterViewInit() {
+    if(!!localStorage.getItem('lang')) {
+      this.translate.use(localStorage.getItem('lang') ?? 'en');
+    } else {
+      this.translate.use('en');
+      localStorage.setItem('lang', 'en');
+    }
+  }
+}
+
+```
+### - And put in public a folder called i18n and inside this folder, put two files which are ar.json and en.json.
+
+- /public/i18n/ar.json
+- /public/i18n/en.json
+
 ## - Others
 
 ### - Changing format of date
@@ -1040,4 +1175,25 @@ export class AppComponent {
   }
 }
 
+```
+### - To know if the form has error on field email for example, write this code.
+```typescript
+myForm.get('email')?.errors?.['required']
+```
+### - To redirect the empty route to the home route, you have to use this code.
+
+```typescript
+{path: '', redirectTo: '/Home', pathMatch: 'full'}
+```
+
+### - For wild card route.
+```typescript
+{path: '**', component: NotFoundComponent}
+```
+
+### - To make router-outlet in the main layout component, you have to make children in this component in the routes array.
+```typescript 
+{path: '', component: MainLayoutComponent, children: [
+  {path: 'product', component: ProductComponent}
+]}
 ```

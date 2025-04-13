@@ -617,6 +617,25 @@ export class OneProductComponent {
 ```html
 <div>{{all_data.description}}</div>
 ```
+## - Services
+```typescript
+@Injectable({
+    ProvidedIn: 'root'
+})
+```
+ - It is used to make the service work as the singleton design pattern.
+```typescript
+@Injectable({
+    ProvidedIn: UserModule
+})
+```
+ - It will have one object for all classes in this module.
+```typescript
+@Injectable({
+    ProvidedIn: 'any'
+})
+```
+- Eager loaded modules will have an object and each of the other lazy loaded modules will have other object.
 
 ## - Post request in HttpClient
 ### - This is a sample code for doing a post request in HttpClient.
@@ -826,6 +845,41 @@ export class ProductComponent {
 
 
 ```
+## - @ViewChild
+
+#### File: `order.component.ts`
+```typescript
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { ProductsViewComponent } from '../products-view/products-view.component';
+
+@Component({
+  selector: 'app-order',
+  imports: [],
+  templateUrl: './order.component.html',
+  styleUrl: './order.component.css'
+})
+export class OrderComponent implements AfterViewInit {
+  @ViewChild('myP') clientNameInpElem!: ElementRef
+  @ViewChild('myInput') myInput!: ElementRef
+  @ViewChild(ProductsViewComponent) productViewComponent!: ProductsViewComponent
+  constructor() {
+    
+  }
+
+  ngAfterViewInit(): void {
+    this.clientNameInpElem.nativeElement.innerHTML = "dsfsdf";
+    this.myInput.nativeElement.value = "asafd";
+  }
+}
+```
+
+#### File: `order.component.html`
+```html
+<p>order works!</p>
+<p #myP>Value</p>
+
+<input #myInput type="text">
+```
 ## - Others
 
 ### - Changing format of date
@@ -833,4 +887,157 @@ export class ProductComponent {
 ```typescript
 let newDate = new DatePipe('en-US');
 let date = newDate.transform(this.form.value.deadline, 'dd-MM-YYYY');
+```
+### - Changing title of page
+
+```typescript
+import { Routes } from '@angular/router';
+const routes: Routes = [
+  {
+    path: 'home',
+    title: 'Home | MyShop',
+    component: HomeComponent,
+  },
+  {
+    path: 'about',
+    title: 'About Us | MyShop',
+    component: AboutComponent,
+  },
+  {
+    path: 'contact',
+    title: 'Contact Us | MyShop',
+    component: ContactComponent,
+  },
+];
+```
+
+```typescript
+import { ResolveFn } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ProductService } from './product.service';
+const productTitleResolver: ResolveFn<string> = (
+  route: ActivatedRouteSnapshot
+): Observable<string> => {
+  const productId = route.paramMap.get('id');
+  const productService = inject(ProductService);
+  
+  return productService.getProductById(productId).pipe(
+    map(product => product ? `${product.name} - MyShop` : 'Product Not Found')
+  );
+};
+const routes: Routes = [
+  {
+    path: 'product/:id',
+    title: productTitleResolver,
+    component: ProductDetailsComponent,
+  },
+];
+```
+```typescript
+import { Title } from '@angular/platform-browser';
+import { Component, OnInit } from '@angular/core';
+@Component({
+  selector: 'app-product-details',
+  templateUrl: './product-details.component.html',
+})
+export class ProductDetailsComponent implements OnInit {
+  constructor(private title: Title) {}
+ ngOnInit() {
+    const currentTitle = this.title.getTitle();
+    const productStatus = 'In Stock'; // Example dynamic data
+    this.title.setTitle(`${currentTitle} - ${productStatus}`);
+  }
+}
+```
+### - Changing favicon
+```typescript
+let link: any = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = "f.png";
+    document.getElementsByTagName('head')[0].appendChild(link);
+```
+### - Functions used in pipe in HttpClient object.
+- tap
+- map
+- finalize
+- retry
+- catchError
+```typescript
+  return productService.getProductById(productId).pipe(
+    map(product => product ? `${product.name} - MyShop` : 'Product Not Found')
+  );
+```
+
+```typescript
+this.myService.getData().pipe(
+  tap(data => {
+    console.log('Data received:', data); // Side effect
+  })
+)
+```
+```typescript
+this.http.get('/api/data').pipe(
+  finalize(() => {
+    this.loading = false; // Always runs, even on error
+    console.log('Request completed or errored');
+  })
+)
+```
+```typescript
+this.userService.getUsers().pipe(
+    retry(3),
+    catchError(error => {
+      this.errorMessage = 'Unable to load users.';
+      return of([]);
+    })
+)
+```
+## - Toastr
+
+### - To setup toastr, use this command.
+
+```bash
+npm install ngx-toastr @angular/animations
+```
+### - To put the config functions, write this code.
+
+```typescript
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr';
+
+import { AppComponent } from './app/app.component';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideAnimations(), // Required for toastr
+    provideToastr({
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+    }),
+  ],
+});
+```
+### - Use it as the following.
+```typescript
+import { Component } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <button (click)="showSuccess()">Show Success Toast</button>
+  `,
+})
+export class AppComponent {
+  constructor(private toastr: ToastrService) {}
+
+  showSuccess() {
+    this.toastr.success('Data saved successfully!', 'Success');
+  }
+}
+
 ```

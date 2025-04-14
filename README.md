@@ -1014,7 +1014,99 @@ export class AppComponent implements AfterViewInit {
 
 - /public/i18n/ar.json
 - /public/i18n/en.json
+## - Subjects
 
+### - To make a subject like in frontend-service.service.ts, you have to make an attribute of type BehaviorSubject<any>({}) in the service.
+### - You have to pass the value inside the function next which is inside the service.
+### - You have to get the data from the service by a function that returns the behavior subject.
+
+```typescript
+import {Component, ElementRef} from '@angular/core';
+import { FrontendServiceService } from '../frontend-service.service';
+
+@Component({
+  selector: 'app-product',
+  imports: [],
+  templateUrl: './product.component.html',
+  styleUrl: './product.component.css'
+})
+export class ProductComponent{
+  
+  element!: ElementRef
+  constructor(private _frontendService: FrontendServiceService) {
+
+  }
+  start_toastr() {
+    this._frontendService.getData().subscribe((data: any) => {
+      this.element = data.instance;
+      console.log(data);
+      this.element.nativeElement.style.display = "flex";
+    });
+  }
+
+}
+```
+#### File: `frontend-service.service.ts`
+```typescript
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FrontendServiceService {
+  toastrObject = new BehaviorSubject<any>({})
+
+  constructor() {
+
+  }
+
+  sendData(data: any) {
+    this.toastrObject.next({
+      instance: data
+    });
+  }
+  
+  getData() {
+    return this.toastrObject;
+  }
+}
+```
+
+```typescript
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { FrontendServiceService } from './frontend-service.service';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, TranslateModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent implements AfterViewInit {
+  title = 'my-app';
+  @ViewChild('toastr') toastrObject!: ElementRef
+  constructor(private frontendService: FrontendServiceService) {
+
+  }
+
+  ngAfterViewInit() {
+    this.frontendService.sendData(this.toastrObject);
+  }
+}
+
+```
+#### File: `app.component.html`
+```html
+<router-outlet></router-outlet>
+
+<div class="toastr" #toastr>
+    <div class="title">Title</div>
+    <div class="description">Description</div>
+</div>
+```
 ## - Others
 
 ### - Changing format of date

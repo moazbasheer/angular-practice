@@ -469,6 +469,177 @@ export class FormsComponent {
     <button [disabled]="form.invalid" >Submit</button>
 </form>
 ```
+
+### - To set all values in the form, use this code.
+```typescript
+this.form.setValue({
+  full_name: "Moaz",
+  phone_no: "123456",
+  address: {
+    city: "cairo",
+    street: "cairo",
+    postal_code: "123456"
+  }
+});
+```
+### - To set some values in the form, use this code.
+```typescript
+this.form.patchValue({
+  full_name: "Moaz",
+  phone_no: "123456",
+  address: {
+    city: "cairo",
+    street: "cairo",
+    postal_code: "123456"
+  }
+});
+```
+### - To remove all values in the form, use this code.
+```typescript
+this.form.reset();
+```
+### - To add Form Array.
+
+```typescript
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-main',
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  templateUrl: './main.component.html',
+  styleUrl: './main.component.css'
+})
+export class MainComponent {
+  form: FormGroup = new FormGroup({
+    price: new FormControl('', [Validators.required]),
+    title: new FormControl(),
+    category: new FormControl(),
+    phones: new FormArray([new FormControl(), new FormControl()])
+  });
+
+  get phones() {
+    return this.form.get('phones') as FormArray;
+  }
+  deletePhone(id: any, event: any) {
+    event.preventDefault();
+    console.log(this.phones.removeAt((id)));
+  }
+  addPhoneNo(event: any) {
+    event.preventDefault();
+    this.phones.push(new FormControl(''));
+  }
+  submit() {
+    console.log(this.form.value);
+  }
+}
+
+```
+
+```html
+<p>main works!</p>
+<form (ngSubmit)="submit();" [formGroup]="form">
+    <div>
+        <label for="">price</label>
+        <input type="number" class="form-control" formControlName="price" [class.is-valid]="form.get('price')?.valid">
+    </div>
+    <div>
+        <label for="">title</label>
+        <input type="text" formControlName="title">
+    </div>
+    <div>
+        <label for="">category</label>
+        <select formControlName="category">
+            <option value="1">option 1</option>
+            <option value="2">option 2</option>
+            <option value="3">option 3</option>
+        </select>
+    </div>
+    <div formArrayName="phones">
+        <div *ngFor="let phone of phones.controls; let i = index">
+            <label for="">Phone-{{i + 1}}</label>
+            <input type="text" [formControlName]="i">
+            <button class="btn btn-primary" (click)="deletePhone(i, $event)">-</button>
+        </div>
+        <button class="btn btn-primary" (click)="addPhoneNo($event);">+</button>
+    </div>
+    {{form.value | json}}
+    <button>Submit</button>
+</form>
+```
+### - To add validations to refer others in angular.
+```typescript
+updateReferralValidators() {
+  if(this.referral?.value == 'others') {
+    this.form.get('referralOther')?.setValidators([Validators.required]);
+  } else {
+    this.form.get('referralOther')?.clearValidators();
+    this.form.get('referralOther')?.reset();
+  }
+  this.form.get('referralOther')?.updateValueAndValidity();
+}
+get referral() {
+  return this.form.get('referral');
+}
+```
+```html
+<div>
+    <input type="radio" formControlName="referral" value="social-media" (change)="updateReferralValidators();">
+    <label for="">social media</label>
+    <input type="radio" formControlName="referral" value="friend" (change)="updateReferralValidators();">
+    <label for="">friend</label>
+    <input type="radio" formControlName="referral" value="others" (change)="updateReferralValidators();">
+    <label for="">others</label>
+</div>
+<div *ngIf="referral?.value == 'others'">
+    <label for="">Specify</label>
+    <input type="text" formControlName="referralOther">
+</div>
+```
+
+### - For Custom Validation.
+- Sync validators.
+
+```typescript
+validateEmailExist(): ValidatorFn {
+  return (formControl: AbstractControl): ValidationErrors | null => {
+    let emailVal = formControl.value;
+    let validationError = {
+      EmailNotValid: {value: emailVal}
+    };
+    return emailVal.includes('@')?null:validationError;
+  }
+}
+```
+
+```typescript
+email: new FormControl('', [this.validateEmailExist()])
+```
+- Async validators
+
+```typescript
+validateEmailExist(): AsyncValidatorFn {
+  return (formControl: AbstractControl): Observable<ValidationErrors | null> => {
+    let emailVal = formControl.value;
+    let validationError = {
+      EmailNotValid: {value: emailVal}
+    };
+
+    return this.productService.getProduct().pipe(
+      map(() => {
+        return {errorVal: true};
+      })
+    );
+    // return emailVal.includes('@')?of(null): of(validationError);
+
+  }
+}
+```
+
+```typescript
+title: new FormControl('', {asyncValidators: [this.validateEmailExist()]}),
+```
 ## - Http Client
 
 ### - To use the Http Client to send and recieve data from the APIs, you have to use provideHttpClient() in app.config.ts and then make a service
@@ -1015,6 +1186,12 @@ export class AppComponent implements AfterViewInit {
 - /public/i18n/ar.json
 - /public/i18n/en.json
 ## - Subjects
+- ِAsync
+- Behavior 
+- publish
+- Replay
+
+## - Behavior Subjects
 
 ### - To make a subject like in frontend-service.service.ts, you have to make an attribute of type BehaviorSubject<any>({}) in the service.
 ### - You have to pass the value inside the function next which is inside the service.
@@ -1107,6 +1284,7 @@ export class AppComponent implements AfterViewInit {
     <div class="description">Description</div>
 </div>
 ```
+
 ## - Others
 
 ### - Changing format of date
@@ -1289,3 +1467,21 @@ myForm.get('email')?.errors?.['required']
   {path: 'product', component: ProductComponent}
 ]}
 ```
+### - From Observables, of and from.
+
+```typescript
+return of("ad1", "ad2", "ad3");
+
+return from(["ad1", "ad2", "ad3"]);
+```
+
+### - Error status
+- 200 => success.
+- 201 => Created
+- 400 => Incorrect body.
+- 401 => unauthorized.
+- 403 => Cors origin.
+- 404 => url is not correct.
+- 409 => duplicated parameters.
+- 500 => internal server error
+
